@@ -23,14 +23,39 @@ export default function SkillsChart() {
     <option value="devops">DevOps</option>
   </select>
 </label>
-      <ResponsiveContainer>
-        <BarChart data={skillsByRole[selectedRole]}>
-          <XAxis dataKey="skill" />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey="count" fill="#8884d8" />
-        </BarChart>
-      </ResponsiveContainer>
+<button
+  onClick={() => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setLoadedData(skillsByRole[selectedRole]);
+      setIsLoading(false);
+    }, 1000);
+  }}
+  style={{
+    padding: '0.5rem 1rem',
+    marginBottom: '1rem',
+    backgroundColor: '#4f46e5',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer'
+  }}
+>
+  Upload data
+</button>
+     {isLoading ? (
+  <p>Loading..</p>
+) : (
+  <ResponsiveContainer>
+    <BarChart data={loadedData}>
+      <XAxis dataKey="skill" />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="count" fill="#8884d8" />
+    </BarChart>
+  </ResponsiveContainer>
+)}
+
     </div>
   );
 }
