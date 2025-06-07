@@ -1,7 +1,20 @@
-export const fakeSkills = [
-  { skill: "React", count: 45 },
-  { skill: "JavaScript", count: 38 },
-  { skill: "Docker", count: 22 },
-  { skill: "TypeScript", count: 19 },
-  { skill: "GraphQL", count: 10 },
-];
+export const skillsByRole = {
+  frontend: [
+    { skill: "React", count: 45 },
+    { skill: "JavaScript", count: 38 },
+    { skill: "TypeScript", count: 25 },
+    { skill: "CSS", count: 20 },
+  ],
+  backend: [
+    { skill: "Node.js", count: 30 },
+    { skill: "Java", count: 28 },
+    { skill: "Docker", count: 22 },
+    { skill: "PostgreSQL", count: 18 },
+  ],
+  devops: [
+    { skill: "Docker", count: 35 },
+    { skill: "Kubernetes", count: 26 },
+    { skill: "AWS", count: 22 },
+    { skill: "Terraform", count: 15 },
+  ],
+};
