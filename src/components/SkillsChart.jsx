@@ -1,12 +1,25 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import {skillsByRole } from '../data/skills';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 
 export default function SkillsChart() {
 
   const [selectedRole, setSelectedRole] = useState('frontend');
   const [isLoading, setIsLoading] = useState(false);
   const [loadedData, setLoadedData] = useState([]);
+
+  useEffect(() => {
+  setIsLoading(true); 
+  setLoadedData([]); 
+
+  const timeout = setTimeout(() => {
+    setLoadedData(skillsByRole[selectedRole]);
+    setIsLoading(false); 
+  }, 1000);
+
+  return () => clearTimeout(timeout); 
+}, [selectedRole]);
 
   return (
     <div style={{ width: '100%', height: 400 }}>
