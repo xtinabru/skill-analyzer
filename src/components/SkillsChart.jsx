@@ -1,5 +1,4 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import {skillsByRole } from '../data/skills';
 import { useState, useEffect } from 'react';
 
 
@@ -9,16 +8,20 @@ export default function SkillsChart() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadedData, setLoadedData] = useState([]);
 
-  useEffect(() => {
-  setIsLoading(true); 
-  setLoadedData([]); 
+useEffect(() => {
+  setIsLoading(true);
+  setLoadedData([]);
 
-  const timeout = setTimeout(() => {
-    setLoadedData(skillsByRole[selectedRole]);
-    setIsLoading(false); 
-  }, 1000);
-
-  return () => clearTimeout(timeout); 
+  fetch('/skills.json')
+    .then((res) => res.json())
+    .then((data) => {
+      setLoadedData(data[selectedRole]);
+      setIsLoading(false);
+    })
+    .catch((err) => {
+      console.error('Error:', err);
+      setIsLoading(false);
+    });
 }, [selectedRole]);
 
   return (
@@ -36,31 +39,11 @@ export default function SkillsChart() {
     <option value="devops">DevOps</option>
   </select>
 </label>
-<button
-  onClick={() => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setLoadedData(skillsByRole[selectedRole]);
-      setIsLoading(false);
-    }, 1000);
-  }}
-  style={{
-    padding: '0.5rem 1rem',
-    marginBottom: '1rem',
-    backgroundColor: '#4f46e5',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer'
-  }}
->
-  Upload data
-</button>
      {isLoading ? (
   <p>Loading..</p>
 ) : (
   <ResponsiveContainer>
-    <BarChart data={loadedData}>
+   <BarChart data={loadedData}>
       <XAxis dataKey="skill" />
       <YAxis />
       <Tooltip />
