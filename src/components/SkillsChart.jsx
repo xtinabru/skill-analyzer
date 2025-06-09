@@ -24,9 +24,12 @@ export default function SkillsChart() {
       });
   }, [selectedRole]);
 
+  const totalMentions = loadedData.reduce((sum, skill) => sum + skill.count, 0);
+
   return (
     <div style={{ width: '100%', height: 400 }}>
       <h2>Popular skills</h2>
+      <p>Total mentions: {totalMentions}</p>
       <label style={{ marginBottom: '1rem', display: 'block' }}>
         Choose the role:
         <select
