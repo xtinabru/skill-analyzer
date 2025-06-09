@@ -13,9 +13,16 @@ export default function SkillsChart() {
     fetch('/skills.json')
       .then((res) => res.json())
       .then((data) => {
-        const skills = data[selectedRole];
-        const sorted = [...skills].sort((a, b) => b.count - a.count);
-        setLoadedData(sorted);
+       const skills = data[selectedRole];
+const total = skills.reduce((sum, skill) => sum + skill.count, 0);
+
+const withPercent = skills.map((skill) => ({
+  ...skill,
+  percent: ((skill.count / total) * 100).toFixed(1) 
+}));
+
+const sorted = [...withPercent].sort((a, b) => b.count - a.count);
+setLoadedData(sorted);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -27,7 +34,7 @@ export default function SkillsChart() {
   const totalMentions = loadedData.reduce((sum, skill) => sum + skill.count, 0);
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
+    <div style={{ width: '100%', height:400 }}>
       <h2>Popular skills</h2>
       <p>Total mentions: {totalMentions}</p>
       <label style={{ marginBottom: '1rem', display: 'block' }}>
@@ -35,7 +42,7 @@ export default function SkillsChart() {
         <select
           value={selectedRole}
           onChange={(e) => setSelectedRole(e.target.value)}
-          style={{ marginLeft: '12rem', padding: '0.7rem' }}
+          style={{ marginLeft: '14rem', padding: '0.7rem' }}
         >
           <option value="frontend">Frontend</option>
           <option value="backend">Backend</option>
@@ -50,7 +57,12 @@ export default function SkillsChart() {
           <BarChart data={loadedData}>
             <XAxis dataKey="skill" />
             <YAxis />
-            <Tooltip />
+            <Tooltip
+  formatter={(value, name, props) => {
+    const percent = props.payload.percent;
+    return [`${value} (${percent}%)`, "Mentions"];
+  }}
+/>
             <Bar dataKey="count" fill="#8884d8" />
           </BarChart>
         </ResponsiveContainer>
