@@ -12,7 +12,7 @@ export default function SkillsChart() {
     setIsLoading(true);
     setLoadedData([]);
 
-    fetch('/skills.json')
+    fetch('http://localhost:3000/api/skills')
       .then((res) => res.json())
       .then((data) => {
         const skills = data[selectedRole];
