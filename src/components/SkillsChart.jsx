@@ -35,6 +35,10 @@ export default function SkillsChart() {
 
   const totalMentions = loadedData.reduce((sum, skill) => sum + skill.count, 0);
 
+  const topSkills = loadedData
+    .filter(skill => skill.skill.toLowerCase().includes(filterText.toLowerCase()))
+    .slice(0, 3);
+
   return (
     <div style={{ width: '100%', height: 400 }}>
       <h2>Popular skills</h2>
@@ -58,53 +62,74 @@ export default function SkillsChart() {
         placeholder="Search skill..."
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        style={{  color: 'white', border: 'none', padding: '0.75rem 1rem', borderRadius: '4px', marginBottom: '1rem', marginTop: '2rem', }}
+        style={{
+          color: 'white',
+          border: 'none',
+          padding: '0.75rem 1rem',
+          borderRadius: '4px',
+          marginBottom: '1rem',
+          marginTop: '2rem'
+        }}
       />
-      <button
-  onClick={() => setShowPercent(!showPercent)}
-  style={{
-    padding: '0.5rem 1rem',
-    backgroundColor: '#4f46e5',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    marginBottom: '1rem',
-    marginLeft: '1rem',
-    cursor: 'pointer'
-  }}
->
-  Show {showPercent ? 'counts' : 'percentages'}
-</button>
 
+      <button
+        onClick={() => setShowPercent(!showPercent)}
+        style={{
+          padding: '0.5rem 1rem',
+          backgroundColor: '#4f46e5',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          marginBottom: '1rem',
+          marginLeft: '1rem',
+          cursor: 'pointer'
+        }}
+      >
+        Show {showPercent ? 'counts' : 'percentages'}
+      </button>
 
       {isLoading ? (
         <p>Loading...</p>
       ) : (
-        <ResponsiveContainer>
-          <BarChart
-            data={loadedData.filter(skill =>
-              skill.skill.toLowerCase().includes(filterText.toLowerCase())
-            )}
-          >
-            <XAxis dataKey="skill" />
-            <YAxis />
-           <Tooltip
-  formatter={(value, name, { payload }) => {
-    if (!payload) return value;
+        <>
+          <ResponsiveContainer>
+            <BarChart
+              data={loadedData.filter(skill =>
+                skill.skill.toLowerCase().includes(filterText.toLowerCase())
+              )}
+            >
+              <XAxis dataKey="skill" />
+              <YAxis />
+              <Tooltip
+                formatter={(value, name, { payload }) => {
+                  if (!payload) return value;
 
-    if (showPercent) {
-      return [`${value}%`, 'Percent'];
-    } else {
-      return [value, 'Mentions'];
-    }
-  }}
-/>
+                  if (showPercent) {
+                    return [`${value}%`, 'Percent'];
+                  } else {
+                    return [value, 'Mentions'];
+                  }
+                }}
+              />
+              <Bar
+                dataKey={showPercent ? 'percent' : 'count'}
+                fill="#8884d8"
+                barSize={70}
+              />
+            </BarChart>
+          </ResponsiveContainer>
 
-
-           <Bar dataKey={showPercent ? 'percent' : 'count'} fill="#8884d8" barSize={70} />
-
-          </BarChart>
-        </ResponsiveContainer>
+          <div style={{ marginTop: '1rem' }}>
+            <h3>Top {topSkills.length} skills:</h3>
+            <ol>
+              {topSkills.map((skill, index) => (
+                <li key={index}>
+                  {skill.skill} — {showPercent ? `${skill.percent}%` : `${skill.count} mentions`}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </>
       )}
     </div>
   );
