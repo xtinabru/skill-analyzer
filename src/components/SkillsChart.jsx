@@ -6,6 +6,7 @@ export default function SkillsChart() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadedData, setLoadedData] = useState([]);
   const [filterText, setFilterText] = useState('');
+  const [showPercent, setShowPercent] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,8 +58,24 @@ export default function SkillsChart() {
         placeholder="Search skill..."
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        style={{ marginLeft: '14rem', padding: '0.7rem', marginBottom: '1rem' }}
+        style={{  color: 'white', border: 'none', padding: '0.75rem 1rem', borderRadius: '4px', marginBottom: '1rem', marginTop: '2rem', }}
       />
+      <button
+  onClick={() => setShowPercent(!showPercent)}
+  style={{
+    padding: '0.5rem 1rem',
+    backgroundColor: '#4f46e5',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    marginBottom: '1rem',
+    marginLeft: '1rem',
+    cursor: 'pointer'
+  }}
+>
+  Show {showPercent ? 'counts' : 'percentages'}
+</button>
+
 
       {isLoading ? (
         <p>Loading...</p>
@@ -71,13 +88,20 @@ export default function SkillsChart() {
           >
             <XAxis dataKey="skill" />
             <YAxis />
-            <Tooltip
-              formatter={(value, name, props) => {
-                const percent = props.payload.percent;
-                return [`${value} (${percent}%)`, "Mentions"];
-              }}
-            />
-           <Bar dataKey="count" fill="#8884d8" barSize={70} />
+           <Tooltip
+  formatter={(value, name, { payload }) => {
+    if (!payload) return value;
+
+    if (showPercent) {
+      return [`${value}%`, 'Percent'];
+    } else {
+      return [value, 'Mentions'];
+    }
+  }}
+/>
+
+
+           <Bar dataKey={showPercent ? 'percent' : 'count'} fill="#8884d8" barSize={70} />
 
           </BarChart>
         </ResponsiveContainer>
